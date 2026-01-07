@@ -2,483 +2,779 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام استخراج وتحليل نتائج الطلاب المتكامل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>📊 نظام استخراج وتحليل نتائج الطلاب</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* أنماط عامة */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f0f2f5 0%, #f0f8ff 100%);
-            padding: 20px;
+        /* إعادة الضبط للهواتف */
+        * {
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
+
+        html {
+            font-size: 14px;
+            height: 100%;
+        }
+
+        @media (max-width: 320px) {
+            html { font-size: 12px; }
+        }
+        @media (min-width: 321px) and (max-width: 480px) {
+            html { font-size: 13px; }
+        }
+        @media (min-width: 481px) and (max-width: 768px) {
+            html { font-size: 14px; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            html { font-size: 15px; }
+        }
+        @media (min-width: 1025px) {
+            html { font-size: 16px; }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #f8f9fa 100%);
+            color: #333;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 10px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* تصميم متجاوب للجميع */
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 10px;
         }
-        .main-title {
+
+        /* رأس النظام */
+        .header {
             text-align: center;
-            color: #1a5c9e;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a5c9e 0%, #0d47a1 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .app-description {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-            line-height: 1.6;
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 700;
         }
-        
-        /* تبويبات النظام */
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* التبويبات */
         .tabs {
             display: flex;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ddd;
             overflow-x: auto;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 12px;
+            padding: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
         .tab {
-            padding: 12px 20px;
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            margin: 0 3px;
             cursor: pointer;
-            font-weight: bold;
-            border-radius: 8px 8px 0 0;
-            background: #e9ecef;
-            margin-left: 5px;
+            transition: all 0.3s;
             white-space: nowrap;
-            flex-shrink: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
+
+        .tab i {
+            font-size: 1.2rem;
+        }
+
         .tab.active {
-            background: #1a5c9e;
+            background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
         }
+
         .tab-content {
             display: none;
             background: white;
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .tab-content.active {
             display: block;
         }
-        
-        /* بطاقة استخراج النصوص */
-        .card { 
-            background: white; 
-            width: 100%; 
-            max-width: 800px; 
-            padding: 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
-            margin: 20px auto;
-        }
-        h2 { 
-            color: #2c3e50; 
-            text-align: center; 
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .config-section {
+
+        /* بطاقة الإعدادات */
+        .config-card {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 20px;
             border-radius: 12px;
-            border: 1px solid #dee2e6;
-            margin-bottom: 25px;
-        }
-        .section-title {
-            color: #2c3e50;
-            margin-top: 0;
+            padding: 20px;
             margin-bottom: 20px;
-            font-size: 18px;
+            border: 1px solid #dee2e6;
+        }
+
+        .section-title {
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .api-config {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 15px;
             margin-bottom: 15px;
+            color: #1a5c9e;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
-        .api-input {
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            font-family: 'Courier New', monospace;
+
+        .section-title i {
+            color: #25d366;
         }
-        .btn-save {
-            background: linear-gradient(to right, #27ae60, #219653);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .api-status {
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .status-valid {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status-invalid {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .status-info {
-            background: #e3f2fd;
-            color: #1565c0;
-            border: 1px solid #90caf9;
-        }
-        
-        /* نموذج الاختيار */
-        .model-select-container {
-            margin: 20px 0;
-        }
-        .model-select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            cursor: pointer;
-        }
-        .model-info {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 6px;
-            color: #1565c0;
-            font-size: 14px;
-            border: 1px solid #90caf9;
-        }
-        
-        /* رفع الملفات */
-        .upload-area { 
-            border: 3px dashed #3498db; 
-            padding: 40px 20px; 
-            text-align: center; 
-            cursor: pointer; 
-            border-radius: 12px; 
-            background: linear-gradient(135deg, #f8fbff 0%, #e6f2ff 100%); 
-            margin-bottom: 25px;
-            transition: all 0.3s;
-        }
-        .upload-area:hover {
-            background: linear-gradient(135deg, #e6f2ff 0%, #d4e6ff 100%);
-            border-color: #2980b9;
-        }
-        .upload-area.dragover {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-color: #27ae60;
-        }
-        .btn-extract { 
-            background: linear-gradient(to right, #e74c3c, #c0392b); 
-            color: white; 
-            border: none; 
-            padding: 16px; 
-            border-radius: 10px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        #result { 
-            background: #f8f9fa; 
-            padding: 25px; 
-            border-radius: 12px; 
-            min-height: 250px; 
-            border: 1px solid #dee2e6; 
-            margin-top: 25px;
-        }
-        .progress-bar {
-            height: 5px;
-            background: #3498db;
-            border-radius: 3px;
-            margin-top: 10px;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        /* إدخال البيانات */
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .input-group {
+
+        /* إدخال API */
+        .api-input-group {
             display: flex;
             flex-direction: column;
-        }
-        .input-group label {
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-        .input-group input, .input-group select {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            transition: border-color 0.3s;
-            width: 100%;
-        }
-        .input-group input:focus, .input-group select:focus {
-            border-color: #1a5c9e;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(26, 92, 158, 0.1);
-        }
-        
-        /* الأزرار */
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 20px;
+            margin-bottom: 15px;
         }
-        button {
-            background: #25d366;
-            color: #fff;
-            border: none;
-            padding: 14px 24px;
+
+        @media (min-width: 768px) {
+            .api-input-group {
+                flex-direction: row;
+            }
+        }
+
+        .api-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
             font-size: 1rem;
-            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .api-input:focus {
+            border-color: #25d366;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            flex: 1;
-            min-width: 140px;
-            transition: all 0.3s;
+            min-height: 50px;
         }
-        button:hover {
+
+        .btn-primary {
+            background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 12px rgba(37, 211, 102, 0.3);
         }
-        button:active {
-            transform: translateY(0);
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
         }
-        button.secondary {
-            background: #6c757d;
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
         }
-        button.secondary:hover {
-            background: #5a6268;
+
+        .btn-lg {
+            padding: 18px 24px;
+            font-size: 1.1rem;
+            width: 100%;
         }
-        button.danger {
-            background: #dc3545;
+
+        /* منطقة رفع الملفات */
+        .upload-area {
+            border: 3px dashed #3498db;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fbff 0%, #e6f2ff 100%);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-        button.danger:hover {
-            background: #c82333;
+
+        .upload-area:hover {
+            border-color: #25d366;
+            background: linear-gradient(135deg, #e6f2ff 0%, #d4e6ff 100%);
         }
-        
-        /* الجداول */
-        .students-table-container {
-            overflow-x: auto;
-            margin-top: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        .upload-area.dragover {
+            border-color: #25d366;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         }
-        .students-table {
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .upload-info {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        /* شريط التقدم */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #25d366);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* نتائج الاستخراج */
+        .result-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+            max-height: 500px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .result-title {
+            color: #1a5c9e;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* تنسيق الجداول في النتائج */
+        .result-table {
             width: 100%;
             border-collapse: collapse;
+            margin: 15px 0;
             background: white;
-            min-width: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .students-table th {
+
+        .result-table th {
             background: #1a5c9e;
             color: white;
-            padding: 14px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .students-table td {
             padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
-        .students-table tr:hover {
+
+        .result-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result-table tr:hover {
             background: #f8f9fa;
         }
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
+
+        /* قوائم في النتائج */
+        .result-list {
+            margin: 15px 0;
+            padding-right: 20px;
+        }
+
+        .result-list li {
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin: 0 auto;
+            border-right: 3px solid #25d366;
         }
-        .delete-btn:hover {
-            background: #c82333;
-        }
-        
-        /* بطاقات التحليل */
-        .summary-cards {
+
+        /* إدخال البيانات */
+        .input-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-bottom: 20px;
         }
+
+        @media (min-width: 480px) {
+            .input-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .input-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 12px 14px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #25d366;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+        }
+
+        /* أزرار الإجراءات */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        /* جدول الطلاب */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .students-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .students-table th {
+            background: linear-gradient(135deg, #1a5c9e 0%, #0d47a1 100%);
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+        }
+
+        .students-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9rem;
+        }
+
+        .students-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            min-width: 80px;
+        }
+
+        .level-excellent { background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); }
+        .level-verygood { background: linear-gradient(135deg, #009688 0%, #00695c 100%); }
+        .level-good { background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%); }
+        .level-pass { background: linear-gradient(135deg, #ff9800 0%, #ef6c00 100%); }
+        .level-weak { background: linear-gradient(135deg, #f44336 0%, #c62828 100%); }
+
+        /* بطاقات الملخص */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
         .summary-card {
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
             text-align: center;
             transition: transform 0.3s;
         }
+
         .summary-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
         }
-        
+
+        .summary-card h3 {
+            color: #1a5c9e;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .summary-card .subtext {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
         /* الرسوم البيانية */
-        .charts-container {
+        .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 20px;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
-        .chart-box {
+
+        @media (min-width: 768px) {
+            .charts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .chart-container {
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
             padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
             height: 300px;
             display: flex;
             flex-direction: column;
         }
-        .chart-box h3 {
-            margin: 0 0 15px 0;
+
+        .chart-container h3 {
             color: #1a5c9e;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            margin-bottom: 15px;
             text-align: center;
+            font-weight: 600;
         }
-        .chart-box canvas {
+
+        .chart-container canvas {
             flex: 1;
             width: 100% !important;
             height: 100% !important;
         }
-        
-        /* الرسائل */
+
+        /* الرسائل والتنبيهات */
         .alert {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             animation: slideIn 0.3s ease;
+            font-size: 0.95rem;
         }
+
         @keyframes slideIn {
             from { transform: translateX(-20px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        .alert.success {
-            background: #d4edda;
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            border: 1px solid #c3e6cb;
+            border: 1px solid #b1dfbb;
         }
-        .alert.warning {
-            background: #fff3cd;
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             color: #856404;
             border: 1px solid #ffeaa7;
         }
-        .alert.error {
-            background: #f8d7da;
+
+        .alert-error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .alert.info {
-            background: #e3f2fd;
+
+        .alert-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             color: #1565c0;
             border: 1px solid #90caf9;
         }
-        
-        /* مخفي */
-        .hidden {
-            display: none !important;
-        }
-        
+
         /* التحميل */
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(52, 152, 219, 0.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
-        
-        /* المستويات */
-        .level-badge {
-            color: #fff;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            min-width: 70px;
+
+        /* التقرير */
+        .report-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
         }
-        .level-excellent { background: #4caf50; }
-        .level-verygood { background: #009688; }
-        .level-good { background: #2196f3; }
-        .level-pass { background: #ff9800; }
-        .level-weak { background: #f44336; }
+
+        /* عناصر مخفية */
+        .hidden {
+            display: none !important;
+        }
+
+        /* الهوامش والأحجام للهواتف */
+        @media (max-width: 767px) {
+            .header {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .tab {
+                padding: 12px 8px;
+                min-width: 100px;
+                font-size: 0.85rem;
+            }
+            
+            .tab-content {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 2.8rem;
+            }
+            
+            .summary-card {
+                padding: 15px;
+            }
+            
+            .summary-card .value {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* تحسينات للأيفون */
+        @supports (-webkit-touch-callout: none) {
+            .tabs {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table-container {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .result-container {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            input, select, button {
+                font-size: 16px; /* منع التكبير التلقائي في iOS */
+            }
+        }
+
+        /* تحسينات لهواوي */
+        @media (-webkit-device-pixel-ratio: 2) and (max-width: 768px) {
+            .tab {
+                padding: 14px 10px;
+            }
+            
+            .btn {
+                padding: 16px 20px;
+            }
+        }
+
+        /* تذييل الصفحة */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        /* زر العودة للأعلى */
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <!-- زر العودة للأعلى -->
+    <div class="scroll-top hidden" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
     <div class="container">
-        <h1 class="main-title">🚀 نظام استخراج وتحليل نتائج الطلاب المتكامل</h1>
-        <p class="app-description">
-            نظام متكامل لاستخراج النصوص من ملفات PDF والصور باستخدام جميع نماذج Gemini، ثم تحليل النتائج تلقائياً
-        </p>
-        
-        <!-- تبويبات النظام -->
+        <!-- رأس النظام -->
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> نظام استخراج وتحليل نتائج الطلاب</h1>
+            <p>استخرج النصوص من ملفات PDF والصور مع الحفاظ على التنسيق والجداول</p>
+        </div>
+
+        <!-- التبويبات -->
         <div class="tabs">
             <div class="tab active" onclick="switchTab('extract')">
                 <i class="fas fa-file-import"></i>
                 <span>استخراج النصوص</span>
             </div>
-            <div class="tab" onclick="switchTab('input')">
-                <i class="fas fa-user-plus"></i>
+            <div class="tab" onclick="switchTab('manage')">
+                <i class="fas fa-database"></i>
                 <span>إدارة البيانات</span>
             </div>
             <div class="tab" onclick="switchTab('analysis')">
@@ -490,201 +786,221 @@
                 <span>التقرير النهائي</span>
             </div>
         </div>
-        
+
         <!-- تبويب استخراج النصوص -->
         <div id="extract-tab" class="tab-content active">
-            <div class="card">
-                <h2><i class="fas fa-file-alt"></i> مستخرج النصوص الذكي</h2>
-                <p class="subtitle">استخرج النصوص من ملفات PDF والصور باستخدام جميع نماذج Gemini المتاحة</p>
-                
-                <div class="config-section">
-                    <div class="section-title">
-                        <i class="fas fa-key"></i>
-                        <span>إعدادات Google Gemini API</span>
-                    </div>
-                    
-                    <div class="api-config">
-                        <input type="password" id="apiKeyInput" class="api-input" placeholder="أدخل مفتاح Google Gemini API هنا..." value="">
-                        <button id="saveApiBtn" class="btn-save">
-                            <i class="fas fa-save"></i> حفظ المفتاح
-                        </button>
-                    </div>
-                    
-                    <div id="apiStatus" class="api-status status-invalid">
-                        <i class="fas fa-times-circle"></i>
-                        <span id="apiStatusText">لم يتم إضافة مفتاح API بعد</span>
-                    </div>
-                    
-                    <div id="modelTesting" class="api-status status-info hidden">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <span>جاري اختبار النماذج المتاحة...</span>
-                    </div>
-                    
-                    <div class="section-title">
-                        <i class="fas fa-brain"></i>
-                        <span>اختيار نموذج Gemini</span>
-                    </div>
-                    
-                    <div class="model-select-container">
-                        <select id="modelSelect" class="model-select">
-                            <option value="">-- اختر النموذج --</option>
-                            <!-- سيتم تعبئة النماذج تلقائياً -->
-                        </select>
-                    </div>
-                    
-                    <div id="modelInfo" class="model-info">
-                        <i class="fas fa-info-circle"></i>
-                        <span id="modelInfoText">سيتم تحميل قائمة النماذج المتاحة بعد إضافة مفتاح API</span>
-                    </div>
+            <div class="config-card">
+                <div class="section-title">
+                    <i class="fas fa-key"></i>
+                    <span>إعدادات Google Gemini API</span>
                 </div>
                 
-                <div class="upload-area" id="dropZone">
-                    <div style="font-size: 48px; color: #3498db; margin-bottom: 15px;">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <div class="upload-text" id="fileLabel">اسحب ملف PDF أو صورة هنا أو انقر للاختيار</div>
-                    <div class="upload-info" id="fileInfo">الحد الأقصى: 10MB | المدعوم: PDF, JPG, PNG, GIF, BMP</div>
-                    <input type="file" id="fileInput" accept="application/pdf,image/*" style="display:none">
+                <div class="api-input-group">
+                    <input type="password" id="apiKeyInput" class="api-input" 
+                           placeholder="أدخل مفتاح Gemini API هنا..." value="">
+                    <button id="saveApiBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ المفتاح
+                    </button>
                 </div>
                 
-                <div class="progress-bar" id="progressBar"></div>
+                <div id="apiStatus" class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>يرجى إضافة مفتاح API للبدء</span>
+                </div>
                 
-                <button id="btnExtract" class="btn-extract" disabled>
-                    <i class="fas fa-magic"></i> استخراج وتحليل تلقائي
-                </button>
+                <div class="section-title" style="margin-top: 20px;">
+                    <i class="fas fa-brain"></i>
+                    <span>نموذج Gemini المستخدم</span>
+                </div>
                 
-                <div id="result">
-                    <div style="text-align: center; color: #7f8c8d; padding: 40px;">
-                        <i class="fas fa-file-alt" style="font-size: 48px; margin-bottom: 15px; color: #bdc3c7;"></i>
-                        <h3 style="color: #95a5a6;">النتائج ستظهر هنا</h3>
-                        <p style="margin-top: 10px;">بعد استخراج النصوص، سيتم معالجتها وتحليلها تلقائياً.</p>
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <i class="fas fa-bolt" style="color: #ff9800;"></i>
+                        <strong style="color: #1565c0;">Gemini 2.0 Flash</strong>
                     </div>
+                    <p style="color: #0d47a1; margin: 0; font-size: 0.9rem;">
+                        النموذج الأسرع والأكثر فعالية لاستخراج النصوص مع الحفاظ على التنسيق والجداول
+                    </p>
+                </div>
+            </div>
+            
+            <div class="upload-area" id="dropZone">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text" id="fileLabel">اسحب ملف PDF أو صورة هنا</div>
+                <div class="upload-info" id="fileInfo">أو انقر للاختيار - الحد الأقصى: 10MB</div>
+                <input type="file" id="fileInput" accept="application/pdf,image/*" class="hidden">
+            </div>
+            
+            <div class="progress-container hidden" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+            
+            <button id="btnExtract" class="btn btn-primary btn-lg" disabled>
+                <i class="fas fa-magic"></i> استخراج وتحليل تلقائي
+            </button>
+            
+            <div id="resultContainer" class="result-container hidden">
+                <div class="result-header">
+                    <div class="result-title">
+                        <i class="fas fa-file-alt"></i> النتائج المستخرجة
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary" style="padding: 8px 16px;">
+                        <i class="fas fa-copy"></i> نسخ
+                    </button>
+                </div>
+                <div id="extractedResults">
+                    <!-- ستظهر النتائج هنا -->
                 </div>
             </div>
         </div>
-        
+
         <!-- تبويب إدارة البيانات -->
-        <div id="input-tab" class="tab-content">
-            <div class="card">
-                <h2><i class="fas fa-user-plus"></i> إدارة البيانات المستخرجة</h2>
-                <p class="subtitle">عرض وتعديل البيانات التي تم استخراجها تلقائياً</p>
-                
-                <div id="alert-message" class="alert hidden"></div>
-                
-                <div class="actions">
-                    <button onclick="processExtractedData()" id="processDataBtn">
-                        <i class="fas fa-robot"></i>
-                        <span>معالجة البيانات المستخرجة</span>
-                    </button>
-                    <button onclick="clearAllData()" class="danger">
-                        <i class="fas fa-trash-alt"></i>
-                        <span>مسح جميع البيانات</span>
-                    </button>
-                    <button onclick="refreshDataView()" class="secondary">
-                        <i class="fas fa-sync-alt"></i>
-                        <span>تحديث العرض</span>
-                    </button>
+        <div id="manage-tab" class="tab-content">
+            <div id="manageAlert" class="alert hidden"></div>
+            
+            <div class="input-grid">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> اسم الطالب</label>
+                    <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
                 </div>
-                
-                <div id="extractedDataSection" class="hidden">
-                    <h3 style="margin-top: 30px;"><i class="fas fa-database"></i> البيانات المستخرجة</h3>
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 15px;">
-                        <pre id="rawDataPreview" style="white-space: pre-wrap; font-family: monospace; max-height: 300px; overflow-y: auto; direction: ltr;"></pre>
-                    </div>
+                <div class="input-group">
+                    <label><i class="fas fa-book"></i> المادة</label>
+                    <select id="subject">
+                        <option value="الرياضيات">الرياضيات</option>
+                        <option value="اللغة العربية">الغة العربية</option>
+                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                        <option value="العلوم">العلوم</option>
+                        <option value="الدراسات">الدراسات</option>
+                        <option value="الحاسب">الحاسب</option>
+                        <option value="عام">عام</option>
+                    </select>
                 </div>
-                
-                <h3 style="margin-top: 30px;"><i class="fas fa-users"></i> الطلاب المستخرجون</h3>
-                <div class="students-table-container">
-                    <table class="students-table" id="studentsList">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>اسم الطالب</th>
-                                <th>المادة</th>
-                                <th>الفصل</th>
-                                <th>الدرجة</th>
-                                <th>المستوى</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                            <!-- سيتم إضافة الطلاب هنا -->
-                        </tbody>
-                    </table>
+                <div class="input-group">
+                    <label><i class="fas fa-school"></i> الفصل</label>
+                    <select id="className">
+                        <option value="1/أ">1/أ</option>
+                        <option value="1/ب">1/ب</option>
+                        <option value="1/ج">1/ج</option>
+                        <option value="2/أ">2/أ</option>
+                        <option value="2/ب">2/ب</option>
+                        <option value="2/ج">2/ج</option>
+                        <option value="غير محدد">غير محدد</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-star"></i> الدرجة (من 40)</label>
+                    <input type="number" id="score" min="0" max="40" step="0.5" placeholder="0-40">
                 </div>
             </div>
+            
+            <div class="action-buttons">
+                <button onclick="addStudent()" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> إضافة طالب
+                </button>
+                <button onclick="clearForm()" class="btn btn-secondary">
+                    <i class="fas fa-broom"></i> تفريغ الحقول
+                </button>
+                <button onclick="processExtractedData()" class="btn btn-primary">
+                    <i class="fas fa-robot"></i> معالجة البيانات
+                </button>
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> مسح الكل
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الطالب</th>
+                            <th>المادة</th>
+                            <th>الفصل</th>
+                            <th>الدرجة</th>
+                            <th>المستوى</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <!-- سيتم ملؤها تلقائياً -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
+
         <!-- تبويب تحليل النتائج -->
         <div id="analysis-tab" class="tab-content">
-            <div class="card">
-                <h2><i class="fas fa-chart-bar"></i> تحليل النتائج</h2>
-                <p class="subtitle">تحليل إحصائي متقدم للبيانات المستخرجة</p>
-                
-                <div id="analysis-alert" class="alert warning">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>لا توجد بيانات لعرض التحليل. يرجى استخراج البيانات أولاً.</span>
+            <div id="analysisAlert" class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>لا توجد بيانات لعرض التحليل. يرجى استخراج البيانات أولاً.</span>
+            </div>
+            
+            <div class="summary-cards" id="summaryCards">
+                <!-- سيتم ملؤها تلقائياً -->
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>توزيع الطلاب حسب المستوى</h3>
+                    <canvas id="levelChart"></canvas>
                 </div>
-                
-                <div class="summary-cards" id="summaryCards">
-                    <!-- سيتم إضافة بطاقات الملخص هنا -->
+                <div class="chart-container">
+                    <h3>متوسط الدرجات حسب المادة</h3>
+                    <canvas id="subjectChart"></canvas>
                 </div>
-                
-                <div class="charts-container">
-                    <div class="chart-box">
-                        <h3>توزيع الطلاب حسب المستوى</h3>
-                        <canvas id="levelChart"></canvas>
-                    </div>
-                    <div class="chart-box">
-                        <h3>متوسط الدرجات حسب المادة</h3>
-                        <canvas id="subjectChart"></canvas>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <h3 style="color: #1a5c9e; margin-bottom: 15px;">تفاصيل النتائج حسب المستوى</h3>
-                    <div id="levelDetailsTable">
-                        <!-- سيتم إضافة جدول تفاصيل المستويات هنا -->
-                    </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+                <h3 style="color: #1a5c9e; margin-bottom: 15px; text-align: center;">
+                    <i class="fas fa-list"></i> تفاصيل النتائج حسب المستوى
+                </h3>
+                <div id="levelDetailsTable">
+                    <!-- سيتم ملؤها تلقائياً -->
                 </div>
             </div>
         </div>
-        
+
         <!-- تبويب التقرير النهائي -->
         <div id="report-tab" class="tab-content">
-            <div class="card">
-                <h2><i class="fas fa-file-pdf"></i> التقرير النهائي</h2>
-                <p class="subtitle">تقرير شامل للبيانات المستخرجة والتحليل الإحصائي</p>
-                
-                <div id="report-alert" class="alert warning">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>لا توجد بيانات لإنشاء التقرير. يرجى استخراج البيانات أولاً.</span>
-                </div>
-                
-                <div class="actions">
-                    <button onclick="generatePDF()" id="pdfBtn">
-                        <i class="fas fa-download"></i>
-                        <span>تحميل PDF</span>
-                    </button>
-                    <button onclick="printReport()" class="secondary">
-                        <i class="fas fa-print"></i>
-                        <span>طباعة التقرير</span>
-                    </button>
-                    <button onclick="exportToExcel()" class="secondary">
-                        <i class="fas fa-file-excel"></i>
-                        <span>تصدير Excel</span>
-                    </button>
-                </div>
-                
-                <div id="reportContent" style="margin-top: 30px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
-                    <!-- سيتم عرض التقرير هنا -->
-                </div>
+            <div id="reportAlert" class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>لا توجد بيانات لإنشاء التقرير. يرجى استخراج البيانات أولاً.</span>
             </div>
+            
+            <div class="report-actions">
+                <button onclick="generatePDF()" class="btn btn-primary">
+                    <i class="fas fa-download"></i> تحميل PDF
+                </button>
+                <button onclick="printReport()" class="btn btn-secondary">
+                    <i class="fas fa-print"></i> طباعة
+                </button>
+                <button onclick="exportToExcel()" class="btn btn-secondary">
+                    <i class="fas fa-file-excel"></i> تصدير Excel
+                </button>
+                <button onclick="shareReport()" class="btn btn-primary">
+                    <i class="fas fa-share"></i> مشاركة
+                </button>
+            </div>
+            
+            <div id="reportContent" style="background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <!-- سيتم ملؤها تلقائياً -->
+            </div>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <div class="footer">
+            <p>
+                <i class="fas fa-code"></i> نظام استخراج وتحليل نتائج الطلاب 
+                | v2.0 | يدعم جميع الأجهزة
+            </p>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         // استيراد مكتبة Google Gemini AI
@@ -693,64 +1009,58 @@
         // تخزين بيانات التطبيق
         const appState = {
             API_KEY: localStorage.getItem('gemini_api_key') || '',
-            students: [],
-            classes: [],
+            students: new Map(), // استخدام Map للحفاظ على الترتيب وعدم التكرار
             extractedData: '',
-            availableModels: [],
-            selectedModel: '',
-            fileType: ''
+            processing: false
         };
 
         // عناصر واجهة المستخدم
         const elements = {
-            // عناصر استخراج النصوص
+            // تبويب الاستخراج
             apiKeyInput: document.getElementById('apiKeyInput'),
             saveApiBtn: document.getElementById('saveApiBtn'),
             apiStatus: document.getElementById('apiStatus'),
-            apiStatusText: document.getElementById('apiStatusText'),
-            modelTesting: document.getElementById('modelTesting'),
-            modelSelect: document.getElementById('modelSelect'),
-            modelInfo: document.getElementById('modelInfo'),
-            modelInfoText: document.getElementById('modelInfoText'),
             fileInput: document.getElementById('fileInput'),
             dropZone: document.getElementById('dropZone'),
             fileLabel: document.getElementById('fileLabel'),
             fileInfo: document.getElementById('fileInfo'),
             btnExtract: document.getElementById('btnExtract'),
-            result: document.getElementById('result'),
-            progressBar: document.getElementById('progressBar'),
+            progressContainer: document.getElementById('progressContainer'),
+            progressFill: document.getElementById('progressFill'),
+            progressText: document.getElementById('progressText'),
+            resultContainer: document.getElementById('resultContainer'),
+            extractedResults: document.getElementById('extractedResults'),
             
-            // عناصر إدارة البيانات
-            alertMessage: document.getElementById('alert-message'),
-            extractedDataSection: document.getElementById('extractedDataSection'),
-            rawDataPreview: document.getElementById('rawDataPreview'),
+            // تبويب الإدارة
+            manageAlert: document.getElementById('manageAlert'),
+            studentName: document.getElementById('studentName'),
+            subject: document.getElementById('subject'),
+            className: document.getElementById('className'),
+            score: document.getElementById('score'),
             studentsTableBody: document.getElementById('studentsTableBody'),
-            processDataBtn: document.getElementById('processDataBtn'),
             
-            // عناصر التحليل
-            analysisAlert: document.getElementById('analysis-alert'),
+            // تبويب التحليل
+            analysisAlert: document.getElementById('analysisAlert'),
             summaryCards: document.getElementById('summaryCards'),
             levelDetailsTable: document.getElementById('levelDetailsTable'),
             
-            // عناصر التقرير
-            reportAlert: document.getElementById('report-alert'),
+            // تبويب التقرير
+            reportAlert: document.getElementById('reportAlert'),
             reportContent: document.getElementById('reportContent'),
-            pdfBtn: document.getElementById('pdfBtn')
+            
+            // زر العودة للأعلى
+            scrollTop: document.querySelector('.scroll-top')
         };
 
         // تهيئة التطبيق
         function initApp() {
-            console.log("جاري تهيئة التطبيق...");
+            console.log("جاري تهيئة النظام...");
             
             // تهيئة إعدادات API
             if (appState.API_KEY) {
                 elements.apiKeyInput.value = "••••••••" + appState.API_KEY.slice(-4);
                 updateApiStatus(true);
-                loadAvailableModels();
             }
-            
-            // تهيئة قائمة الصفوف
-            initializeClasses();
             
             // تحميل البيانات المحفوظة
             loadFromLocalStorage();
@@ -758,23 +1068,25 @@
             // إعداد معالجات الأحداث
             setupEventHandlers();
             
-            console.log("تم تهيئة التطبيق بنجاح");
+            // إعداد زر العودة للأعلى
+            setupScrollTop();
+            
+            // تحديث العرض
+            updateStudentsTable();
+            updateAnalysis();
+            
+            console.log("تم تهيئة النظام بنجاح");
         }
 
         // إعداد معالجات الأحداث
         function setupEventHandlers() {
-            // استخراج النصوص
+            // زر حفظ API
             elements.saveApiBtn.addEventListener('click', saveApiKey);
-            elements.modelSelect.addEventListener('change', function() {
-                appState.selectedModel = this.value;
-                updateModelInfo();
-            });
+            
+            // رفع الملفات
             elements.dropZone.addEventListener('click', () => elements.fileInput.click());
             elements.fileInput.addEventListener('change', handleFileSelect);
             elements.btnExtract.addEventListener('click', extractAndAnalyze);
-            
-            // إدخال البيانات
-            elements.processDataBtn.addEventListener('click', processExtractedData);
             
             // سحب وإفلات الملفات
             ['dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -795,264 +1107,125 @@
                 });
             });
             
-            // عرض/إخفاء مفتاح API
-            elements.apiKeyInput.addEventListener('focus', function() {
-                if (appState.API_KEY && this.value.includes('••••')) {
-                    this.value = appState.API_KEY;
-                }
+            // إدخال البيانات
+            elements.studentName.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addStudent();
+            });
+            elements.score.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addStudent();
             });
             
-            elements.apiKeyInput.addEventListener('blur', function() {
-                if (appState.API_KEY && !this.value.includes('••••')) {
-                    this.value = "••••••••" + appState.API_KEY.slice(-4);
+            // تحديث حالة زر الاستخراج عند إضافة API
+            elements.apiKeyInput.addEventListener('input', () => {
+                const hasApiKey = elements.apiKeyInput.value.trim().length > 0;
+                elements.btnExtract.disabled = !hasApiKey;
+            });
+        }
+
+        // إعداد زر العودة للأعلى
+        function setupScrollTop() {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    elements.scrollTop.classList.remove('hidden');
+                    elements.scrollTop.classList.add('show');
+                } else {
+                    elements.scrollTop.classList.remove('show');
+                    elements.scrollTop.classList.add('hidden');
                 }
             });
         }
 
-        // إدارة إعدادات API
+        // إدارة API
         function updateApiStatus(isValid) {
             if (isValid && appState.API_KEY) {
-                elements.apiStatus.className = 'api-status status-valid';
-                elements.apiStatusText.innerHTML = '<i class="fas fa-check-circle"></i> مفتاح API صالح ومحفوظ';
+                elements.apiStatus.className = 'alert alert-success';
+                elements.apiStatus.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>مفتاح API صالح ومحفوظ</span>
+                `;
                 elements.btnExtract.disabled = false;
             } else {
-                elements.apiStatus.className = 'api-status status-invalid';
-                elements.apiStatusText.innerHTML = '<i class="fas fa-times-circle"></i> يرجى إضافة مفتاح API صالح';
+                elements.apiStatus.className = 'alert alert-warning';
+                elements.apiStatus.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>يرجى إضافة مفتاح API صالح</span>
+                `;
                 elements.btnExtract.disabled = true;
             }
         }
 
-        async function saveApiKey() {
+        function saveApiKey() {
             const inputKey = elements.apiKeyInput.value.trim();
             
+            // إذا كان الحقل يحتوي على نقاط (مفتاح مخفي)
             if (inputKey.includes('••••')) {
                 updateApiStatus(true);
                 return;
             }
             
             if (inputKey === '') {
+                // مسح المفتاح
                 localStorage.removeItem('gemini_api_key');
                 appState.API_KEY = '';
                 elements.apiKeyInput.value = '';
                 updateApiStatus(false);
-                showAlert('تم مسح مفتاح API بنجاح', 'success');
+                showAlert('manageAlert', 'تم مسح مفتاح API بنجاح', 'success');
                 return;
             }
             
+            // التحقق من شكل مفتاح API
             if (!inputKey.startsWith('AIza')) {
-                showAlert('يبدو أن مفتاح API غير صحيح. يجب أن يبدأ المفتاح بـ "AIza"', 'error');
+                showAlert('manageAlert', 'يبدو أن مفتاح API غير صحيح. يجب أن يبدأ المفتاح بـ "AIza"', 'error');
                 return;
             }
             
             // اختبار الاتصال بالـ API
-            elements.modelTesting.classList.remove('hidden');
-            elements.modelTesting.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري اختبار الاتصال بالنماذج...';
-            
-            try {
-                const isValid = await testApiConnection(inputKey);
+            testApiConnection(inputKey).then(isValid => {
                 if (isValid) {
                     appState.API_KEY = inputKey;
                     localStorage.setItem('gemini_api_key', appState.API_KEY);
                     elements.apiKeyInput.value = "••••••••" + appState.API_KEY.slice(-4);
                     updateApiStatus(true);
-                    
-                    // تحميل النماذج المتاحة
-                    await loadAvailableModels();
-                    
-                    showAlert('تم حفظ مفتاح API بنجاح وتم تحميل النماذج المتاحة', 'success');
+                    showAlert('manageAlert', 'تم حفظ مفتاح API بنجاح والاتصال بالنموذج!', 'success');
                 } else {
-                    showAlert('مفتاح API غير صالح أو غير قادر على الاتصال بخدمات Google AI', 'error');
+                    showAlert('manageAlert', 'مفتاح API غير صالح أو غير قادر على الاتصال بخدمات Google AI', 'error');
                 }
-            } catch (error) {
-                showAlert('حدث خطأ أثناء اختبار الاتصال: ' + error.message, 'error');
-            } finally {
-                elements.modelTesting.classList.add('hidden');
-            }
+            }).catch(error => {
+                showAlert('manageAlert', 'حدث خطأ أثناء اختبار الاتصال: ' + error.message, 'error');
+            });
         }
 
         async function testApiConnection(apiKey) {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
-                if (!response.ok) {
-                    throw new Error(`خطأ في الاتصال: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log("النماذج المتاحة:", data.models);
-                return true;
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash?key=${apiKey}`);
+                return response.ok;
             } catch (error) {
                 console.error("خطأ في اختبار الاتصال:", error);
                 return false;
             }
         }
 
-        async function loadAvailableModels() {
-            if (!appState.API_KEY) return;
-            
-            elements.modelTesting.classList.remove('hidden');
-            elements.modelTesting.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحميل النماذج المتاحة...';
-            
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${appState.API_KEY}`);
-                if (!response.ok) {
-                    throw new Error(`خطأ في تحميل النماذج: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                appState.availableModels = data.models || [];
-                
-                // تصفية نماذج Gemini فقط
-                const geminiModels = appState.availableModels.filter(model => 
-                    model.name.includes('gemini') || 
-                    model.name.includes('models/gemini')
-                );
-                
-                // تحديث قائمة النماذج
-                updateModelSelect(geminiModels);
-                
-                elements.modelInfoText.textContent = `تم العثور على ${geminiModels.length} نموذج متاح`;
-                
-            } catch (error) {
-                console.error("خطأ في تحميل النماذج:", error);
-                elements.modelInfoText.textContent = 'خطأ في تحميل النماذج. تأكد من اتصال الإنترنت وصحة مفتاح API.';
-            } finally {
-                elements.modelTesting.classList.add('hidden');
-            }
-        }
-
-        function updateModelSelect(models) {
-            elements.modelSelect.innerHTML = '<option value="">-- اختر النموذج --</option>';
-            
-            // فرز النماذج حسب الأفضلية
-            const sortedModels = models.sort((a, b) => {
-                // إعطاء الأولوية للنماذج الأحدث
-                if (a.name.includes('1.5') && !b.name.includes('1.5')) return -1;
-                if (!a.name.includes('1.5') && b.name.includes('1.5')) return 1;
-                
-                // ثم النماذج التي تدعم الصور
-                if (a.name.includes('vision') && !b.name.includes('vision')) return -1;
-                if (!a.name.includes('vision') && b.name.includes('vision')) return 1;
-                
-                // ثم النماذج العامة
-                if (a.name.includes('pro') && !b.name.includes('pro')) return -1;
-                if (!a.name.includes('pro') && b.name.includes('pro')) return 1;
-                
-                return 0;
-            });
-            
-            sortedModels.forEach(model => {
-                const modelName = model.name.split('/').pop();
-                const option = document.createElement('option');
-                option.value = model.name;
-                
-                // تسمية النماذج بشكل مفهوم
-                let displayName = modelName;
-                if (modelName.includes('gemini-1.5-flash')) displayName = 'Gemini 1.5 Flash (الأسرع)';
-                else if (modelName.includes('gemini-1.5-pro')) displayName = 'Gemini 1.5 Pro (الأقوى)';
-                else if (modelName.includes('gemini-pro-vision')) displayName = 'Gemini Pro Vision (للصور)';
-                else if (modelName.includes('gemini-pro')) displayName = 'Gemini Pro (عام)';
-                else if (modelName.includes('gemini-ultra')) displayName = 'Gemini Ultra (المتقدم)';
-                
-                option.textContent = displayName;
-                elements.modelSelect.appendChild(option);
-            });
-            
-            // تحديد النموذج الافتراضي
-            const defaultModel = sortedModels.find(m => m.name.includes('gemini-1.5-flash')) ||
-                               sortedModels.find(m => m.name.includes('gemini-pro')) ||
-                               (sortedModels.length > 0 ? sortedModels[0] : null);
-            
-            if (defaultModel) {
-                elements.modelSelect.value = defaultModel.name;
-                appState.selectedModel = defaultModel.name;
-                updateModelInfo();
-            }
-        }
-
-        function updateModelInfo() {
-            if (!appState.selectedModel) return;
-            
-            const modelName = appState.selectedModel.split('/').pop();
-            let info = '';
-            
-            if (modelName.includes('flash')) {
-                info = 'النموذج الأسرع والأقل تكلفة. مناسب لاستخراج النصوص السريعة.';
-            } else if (modelName.includes('1.5-pro')) {
-                info = 'النموذج الأقوى والأكثر دقة. مناسب للجداول والنصوص المعقدة.';
-            } else if (modelName.includes('vision')) {
-                info = 'مصمم خصيصاً للصور. يستخرج النصوص والبيانات من الصور بدقة عالية.';
-            } else if (modelName.includes('pro')) {
-                info = 'نموذج متوازن للاستخدام العام. مناسب لمعظم المهام.';
-            } else if (modelName.includes('ultra')) {
-                info = 'النموذج الأكثر تطوراً. للأعمال المتقدمة والمعقدة.';
-            } else {
-                info = 'نموذج Gemini للذكاء الاصطناعي.';
-            }
-            
-            elements.modelInfoText.textContent = info;
-        }
-
-        // معالجة تحميل الملفات
+        // معالجة الملفات
         function handleFileSelect() {
             if (elements.fileInput.files[0]) {
                 const file = elements.fileInput.files[0];
                 const fileSize = (file.size / 1024 / 1024).toFixed(2);
-                const fileName = file.name.length > 30 ? file.name.substring(0, 27) + '...' : file.name;
+                const fileName = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
                 
                 elements.fileLabel.innerHTML = `<i class="fas fa-file"></i> ${fileName}`;
-                elements.fileInfo.innerHTML = `<i class="fas fa-info-circle"></i> حجم الملف: ${fileSize} MB | النوع: ${file.type}`;
-                
-                // تحديد نوع الملف
-                appState.fileType = file.type;
-                
-                // اقتراح النموذج المناسب تلقائياً
-                suggestModelForFile(file);
+                elements.fileInfo.innerHTML = `<i class="fas fa-info-circle"></i> ${fileSize} MB | ${file.type.split('/')[1] || 'ملف'}`;
             }
         }
 
-        function suggestModelForFile(file) {
-            if (!appState.availableModels.length) return;
-            
-            let suggestedModel = '';
-            
-            if (file.type.startsWith('image/')) {
-                // البحث عن نموذج يدعم الصور
-                suggestedModel = appState.availableModels.find(m => 
-                    m.name.includes('vision') || 
-                    m.name.includes('1.5') ||
-                    m.supportedGenerationMethods?.includes('generateContent')
-                );
-            } else if (file.type === 'application/pdf') {
-                // البحث عن نموذج قوي للنصوص
-                suggestedModel = appState.availableModels.find(m => 
-                    m.name.includes('1.5-pro') || 
-                    m.name.includes('pro') ||
-                    m.name.includes('flash')
-                );
-            }
-            
-            if (suggestedModel) {
-                elements.modelSelect.value = suggestedModel.name;
-                appState.selectedModel = suggestedModel.name;
-                updateModelInfo();
-                
-                showAlert(`تم اختيار النموذج ${suggestedModel.name.split('/').pop()} تلقائياً للملف`, 'info');
-            }
-        }
-
-        // استخراج وتحليل البيانات
+        // استخراج النصوص
         async function extractAndAnalyze() {
             if (!appState.API_KEY) {
-                showAlert('يرجى إضافة مفتاح API أولاً', 'error');
-                return;
-            }
-            
-            if (!appState.selectedModel) {
-                showAlert('يرجى اختيار نموذج من القائمة', 'error');
+                showAlert('manageAlert', 'يرجى إضافة مفتاح API أولاً', 'error');
                 return;
             }
             
             if (!elements.fileInput.files[0]) {
-                showAlert('الرجاء اختيار ملف أولاً', 'error');
+                showAlert('manageAlert', 'الرجاء اختيار ملف أولاً', 'error');
                 return;
             }
             
@@ -1060,32 +1233,50 @@
             const maxSize = 10 * 1024 * 1024;
             
             if (file.size > maxSize) {
-                showAlert('حجم الملف كبير جداً. الحد الأقصى هو 10MB', 'error');
+                showAlert('manageAlert', 'حجم الملف كبير جداً. الحد الأقصى هو 10MB', 'error');
                 return;
             }
             
             // بدء المعالجة
+            appState.processing = true;
             elements.btnExtract.disabled = true;
-            elements.btnExtract.innerHTML = '<span class="loading"></span> جاري الاستخراج والتحليل...';
-            elements.progressBar.style.width = '20%';
+            elements.btnExtract.innerHTML = '<span class="loading"></span> جاري الاستخراج...';
+            elements.progressContainer.classList.remove('hidden');
+            updateProgress(10);
             
             try {
                 const genAI = new GoogleGenerativeAI(appState.API_KEY);
-                const model = genAI.getGenerativeModel({ model: appState.selectedModel });
+                const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
                 
-                elements.progressBar.style.width = '40%';
+                updateProgress(30);
                 
                 const reader = new FileReader();
                 
                 reader.onloadend = async () => {
                     try {
                         const base64Data = reader.result.split(',')[1];
-                        elements.progressBar.style.width = '60%';
+                        updateProgress(50);
                         
-                        // بناء النص التوضيحي المناسب لاستخراج نتائج الطلاب
-                        const promptText = buildExtractionPrompt(file.type);
+                        // نص توضيحي للحفاظ على التنسيق والجداول
+                        const promptText = `هذا ملف يحتوي على نتائج طلاب. المطلوب استخراج البيانات بدقة مع الحفاظ الكامل على:
+                        1. التنسيق الأصلي (الجداول، القوائم، العناوين)
+                        2. ترتيب البيانات كما هي في الملف
+                        3. جميع الأسماء والدرجات والمواد
+                        4. العلاقة بين الأسماء ودرجاتهم
                         
-                        elements.progressBar.style.width = '80%';
+                        إذا كان هناك جداول:
+                        - حافظ على شكل الجدول الأصلي
+                        - احتفظ بترتيب الأعمدة والصفوف
+                        - استخدم علامات الجداول المناسبة
+                        
+                        الشكل المطلوب:
+                        • لكل طالب: اسم الطالب | المادة | الفصل | الدرجة
+                        • إذا لم توجد معلومات: استخدم "غير محدد"
+                        • إذا كانت الدرجات بنسبة مئوية: حولها إلى درجة من 40
+                        
+                        أعد البيانات بنفس الترتيب والتنسيق الموجود في الملف.`;
+                        
+                        updateProgress(70);
                         
                         const result = await model.generateContent([
                             promptText,
@@ -1095,23 +1286,19 @@
                         const response = await result.response;
                         const extractedText = response.text();
                         
-                        // حفظ البيانات المستخرجة
                         appState.extractedData = extractedText;
+                        updateProgress(90);
                         
-                        // عرض البيانات المستخرجة
-                        displayExtractedResults(extractedText);
-                        
-                        elements.progressBar.style.width = '100%';
+                        // عرض النتائج مع الحفاظ على التنسيق
+                        displayFormattedResults(extractedText);
+                        updateProgress(100);
                         
                         // معالجة البيانات تلقائياً
-                        const processedData = await processExtractedDataAutomatically(extractedText);
-                        
-                        if (processedData.length > 0) {
-                            showAlert(`تم استخراج ${processedData.length} طالب بنجاح!`, 'success');
-                            switchTab('input');
-                        } else {
-                            showAlert('تم استخراج البيانات بنجاح. يرجى مراجعة وتعديل البيانات يدوياً.', 'warning');
-                        }
+                        setTimeout(() => {
+                            processExtractedData();
+                            switchTab('manage');
+                            showAlert('manageAlert', `تم استخراج البيانات بنجاح!`, 'success');
+                        }, 1000);
                         
                     } catch (apiError) {
                         console.error("API Error:", apiError);
@@ -1122,7 +1309,7 @@
                 };
                 
                 reader.onerror = () => {
-                    showAlert('حدث خطأ أثناء قراءة الملف', 'error');
+                    showAlert('manageAlert', 'حدث خطأ أثناء قراءة الملف', 'error');
                     finishProcessing();
                 };
                 
@@ -1130,100 +1317,158 @@
                 
             } catch (error) {
                 console.error("General error:", error);
-                showAlert(`حدث خطأ: ${error.message}`, 'error');
+                showAlert('manageAlert', `حدث خطأ: ${error.message}`, 'error');
                 finishProcessing();
             }
         }
 
-        function buildExtractionPrompt(fileType) {
-            let prompt = `أنا أريد استخراج نتائج الطلاب من هذا الملف. 
+        function updateProgress(percentage) {
+            elements.progressFill.style.width = percentage + '%';
+            elements.progressText.textContent = percentage + '%';
             
-المطلوب استخراج البيانات التالية بدقة:
-1. أسماء الطلاب الكاملة
-2. الدرجات (من 40 أو النسبة المئوية)
-3. المواد الدراسية
-4. الفصول أو الأقسام
-
-تعليمات مهمة:
-- إذا كانت الدرجات بنسبة مئوية، حولها إلى درجة من 40 (الدرجة = (النسبة × 40) ÷ 100)
-- إذا لم يتم ذكر المادة، استخدم "عام" كقيمة افتراضية
-- إذا لم يتم ذكر الفصل، استخدم "غير محدد"
-- تأكد من استخراج جميع الأرقام بدقة
-- استخرج حتى الأسماء العربية بكاملها
-- تأكد من مطابقة الأسماء مع درجاتها الصحيحة
-
-الشكل المطلوب للبيانات:
-اسم الطالب | المادة | الفصل | الدرجة/40
-
-مثال:
-أحمد محمد | الرياضيات | 2/أ | 35
-سارة علي | اللغة العربية | 2/ب | 28
-محمد حسن | العلوم | 2/ج | 32`;
-
-            if (fileType.startsWith('image/')) {
-                prompt += `
-
-ملاحظة: هذا ملف صورة، لذا ركز على قراءة النصوص بوضوح والتعرف على الجداول بدقة.`;
-            } else if (fileType === 'application/pdf') {
-                prompt += `
-
-ملاحظة: هذا ملف PDF، استخرج البيانات من جميع الصفحات وتأكد من الحفاظ على ترتيب الجداول.`;
+            if (percentage === 100) {
+                elements.progressText.textContent = 'اكتمل!';
             }
-            
-            return prompt;
         }
 
-        async function processExtractedDataAutomatically(extractedText) {
-            try {
-                console.log("معالجة البيانات المستخرجة تلقائياً...");
+        function finishProcessing() {
+            appState.processing = false;
+            elements.btnExtract.disabled = false;
+            elements.btnExtract.innerHTML = '<i class="fas fa-magic"></i> استخراج وتحليل تلقائي';
+            
+            setTimeout(() => {
+                elements.progressContainer.classList.add('hidden');
+                elements.progressFill.style.width = '0%';
+                elements.progressText.textContent = '0%';
+            }, 2000);
+        }
+
+        function handleApiError(apiError) {
+            let errorMessage = 'حدث خطأ أثناء معالجة الملف';
+            
+            if (apiError.message.includes('404') || apiError.message.includes('not found')) {
+                errorMessage = 'نموذج Gemini 2.0 Flash غير متوفر. تأكد من أن مفتاح API يدعم هذا النموذج.';
+            } else if (apiError.message.includes('API key not valid')) {
+                errorMessage = 'مفتاح API غير صالح. يرجى التحقق من المفتاح وإعادة المحاولة.';
+            } else if (apiError.message.includes('quota')) {
+                errorMessage = 'تم تجاوز الحد المسموح. جرب لاحقاً أو استخدم مفتاح API آخر.';
+            } else {
+                errorMessage += ': ' + apiError.message;
+            }
+            
+            showAlert('manageAlert', errorMessage, 'error');
+        }
+
+        function displayFormattedResults(text) {
+            // تنظيف النص مع الحفاظ على التنسيق
+            let formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+                .replace(/  /g, '&nbsp;&nbsp;');
+            
+            // تحويل الجداول إلى HTML
+            formattedText = formatTables(formattedText);
+            
+            // تحويل القوائم إلى HTML
+            formattedText = formatLists(formattedText);
+            
+            elements.extractedResults.innerHTML = formattedText;
+            elements.resultContainer.classList.remove('hidden');
+        }
+
+        function formatTables(text) {
+            // البحث عن الجداول في النص
+            const tableRegex = /(\|[^\n]+\|\n)+/g;
+            return text.replace(tableRegex, (match) => {
+                const rows = match.trim().split('\n').filter(row => row.trim());
+                let html = '<div style="overflow-x: auto; margin: 15px 0;">';
+                html += '<table class="result-table">';
                 
-                const lines = extractedText.split('\n');
-                const students = [];
-                
-                for (const line of lines) {
-                    const studentData = parseStudentLine(line);
-                    if (studentData) {
-                        students.push(studentData);
-                    }
-                }
-                
-                // إذا لم نجد بيانات، حاول البحث بأنماط مختلفة
-                if (students.length === 0) {
-                    const altStudents = alternativeParsing(extractedText);
-                    students.push(...altStudents);
-                }
-                
-                // حفظ الطلاب المستخرجين
-                if (students.length > 0) {
-                    appState.students = students;
-                    updateStudentsTable();
-                    updateAnalysis();
-                    saveToLocalStorage();
+                rows.forEach((row, index) => {
+                    const cells = row.split('|').filter(cell => cell.trim() !== '');
+                    const isHeader = index === 0;
                     
-                    // تحديث عرض البيانات الأولية
-                    elements.extractedDataSection.classList.remove('hidden');
-                    elements.rawDataPreview.textContent = extractedText;
+                    html += '<tr>';
+                    cells.forEach(cell => {
+                        const content = cell.trim();
+                        if (isHeader) {
+                            html += `<th>${content}</th>`;
+                        } else {
+                            html += `<td>${content}</td>`;
+                        }
+                    });
+                    html += '</tr>';
+                });
+                
+                html += '</table></div>';
+                return html;
+            });
+        }
+
+        function formatLists(text) {
+            // البحث عن القوائم النقطية
+            const listRegex = /(?:^|\n)(?:[-•*]\s+[^\n]+(?:\n(?![-•*]\s+)[^\n]*)*)+/g;
+            return text.replace(listRegex, (match) => {
+                const items = match.trim().split('\n').filter(item => item.trim());
+                let html = '<ul class="result-list">';
+                
+                items.forEach(item => {
+                    const content = item.replace(/^[-•*]\s+/, '').trim();
+                    if (content) {
+                        html += `<li>${content}</li>`;
+                    }
+                });
+                
+                html += '</ul>';
+                return html;
+            });
+        }
+
+        function copyResults() {
+            const textToCopy = appState.extractedData;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showAlert('manageAlert', 'تم نسخ النتائج إلى الحافظة', 'success');
+            });
+        }
+
+        // معالجة البيانات المستخرجة
+        function processExtractedData() {
+            if (!appState.extractedData) {
+                showAlert('manageAlert', 'لا توجد بيانات مستخرجة', 'error');
+                return;
+            }
+            
+            const lines = appState.extractedData.split('\n');
+            let processedCount = 0;
+            
+            lines.forEach(line => {
+                const studentData = parseStudentLine(line);
+                if (studentData) {
+                    addStudentToMap(studentData);
+                    processedCount++;
                 }
-                
-                return students;
-                
-            } catch (error) {
-                console.error("خطأ في المعالجة التلقائية:", error);
-                return [];
+            });
+            
+            if (processedCount > 0) {
+                updateStudentsTable();
+                updateAnalysis();
+                saveToLocalStorage();
+                showAlert('manageAlert', `تمت معالجة ${processedCount} طالب بنجاح`, 'success');
+            } else {
+                showAlert('manageAlert', 'لم يتم العثور على بيانات طلاب في النص المستخرج', 'warning');
             }
         }
 
         function parseStudentLine(line) {
-            // تنظيف السطر
             const cleanLine = line.trim();
-            if (!cleanLine || cleanLine.length < 3) return null;
+            if (!cleanLine || cleanLine.length < 2) return null;
             
             // أنماط مختلفة للتحليل
             const patterns = [
                 // النمط: اسم | مادة | فصل | درجة
-                /([^\|]+)\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*\|\s*([\d\.]+)/,
+                /([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([\d\.]+)/,
                 // النمط: اسم - مادة - فصل - درجة
-                /([^\-]+)\s*\-\s*([^\-]+)\s*\-\s*([^\-]+)\s*\-\s*([\d\.]+)/,
+                /([^-]+)\s*-\s*([^-]+)\s*-\s*([^-]+)\s*-\s*([\d\.]+)/,
                 // النمط: اسم، مادة، فصل، درجة
                 /([^،]+)\s*،\s*([^،]+)\s*،\s*([^،]+)\s*،\s*([\d\.]+)/,
                 // النمط: اسم: درجة
@@ -1254,7 +1499,7 @@
                         className = "غير محدد";
                     }
                     
-                    // تحويل النسبة المئوية إلى درجة من 40
+                    // تحويل النسبة المئوية
                     if (score > 40 && score <= 100) {
                         score = (score * 40) / 100;
                     }
@@ -1262,10 +1507,10 @@
                     // التأكد من صحة الدرجة
                     if (score >= 0 && score <= 40 && name.length > 1) {
                         return {
-                            id: Date.now() + Math.random(),
-                            name: cleanArabicText(name),
-                            subject: cleanArabicText(subject) || "عام",
-                            className: cleanArabicText(className) || "غير محدد",
+                            id: generateStudentId(name),
+                            name: cleanText(name),
+                            subject: cleanText(subject) || "عام",
+                            className: cleanText(className) || "غير محدد",
                             score: parseFloat(score.toFixed(1)),
                             level: getLevel(score)
                         };
@@ -1276,217 +1521,22 @@
             return null;
         }
 
-        function alternativeParsing(text) {
-            const students = [];
-            const lines = text.split('\n');
+        function generateStudentId(name) {
+            // إنشاء ID فريد للطالب باستخدام الاسم والطابع الزمني
+            const timestamp = Date.now();
+            const nameHash = Array.from(name).reduce((hash, char) => {
+                return ((hash << 5) - hash) + char.charCodeAt(0);
+            }, 0);
             
-            for (const line of lines) {
-                const cleanLine = line.trim();
-                if (cleanLine.length < 2) continue;
-                
-                // البحث عن أرقام في السطر
-                const numberMatches = cleanLine.match(/(\d+\.?\d*)/g);
-                if (numberMatches) {
-                    for (const numberStr of numberMatches) {
-                        let score = parseFloat(numberStr);
-                        
-                        // تحويل النسبة المئوية
-                        if (score > 40 && score <= 100) {
-                            score = (score * 40) / 100;
-                        }
-                        
-                        if (score >= 0 && score <= 40) {
-                            // استخراج الاسم (إزالة الأرقام والرموز)
-                            let name = cleanLine.replace(/(\d+\.?\d*)/g, '')
-                                              .replace(/[^\u0600-\u06FF\s]/g, '')
-                                              .trim();
-                            
-                            if (name.length > 1) {
-                                students.push({
-                                    id: Date.now() + Math.random(),
-                                    name: cleanArabicText(name),
-                                    subject: "عام",
-                                    className: "غير محدد",
-                                    score: parseFloat(score.toFixed(1)),
-                                    level: getLevel(score)
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return students;
+            return `student_${Math.abs(nameHash)}_${timestamp}`;
         }
 
-        function cleanArabicText(text) {
+        function cleanText(text) {
             if (!text) return '';
-            // إزالة الرموز والمسافات الزائدة
-            return text.replace(/[^\u0600-\u06FF\s]/g, '')
+            // إزالة الرموز الخاصة والحفاظ على النص العربي
+            return text.replace(/[^\u0600-\u06FF\sa-zA-Z0-9]/g, '')
                       .replace(/\s+/g, ' ')
                       .trim();
-        }
-
-        function handleApiError(apiError) {
-            let errorMessage = 'حدث خطأ أثناء معالجة الملف';
-            
-            if (apiError.message.includes('404') || apiError.message.includes('not found')) {
-                errorMessage = 'النموذج المحدد غير متوفر. جرب اختيار نموذج آخر من القائمة.';
-                
-                // اقتراح نموذج بديل
-                if (appState.availableModels.length > 0) {
-                    const altModel = appState.availableModels.find(m => 
-                        !m.name.includes('flash') && 
-                        m.name.includes('gemini')
-                    );
-                    
-                    if (altModel) {
-                        errorMessage += ` جرب استخدام ${altModel.name.split('/').pop()}`;
-                    }
-                }
-            } else if (apiError.message.includes('API key not valid')) {
-                errorMessage = 'مفتاح API غير صالح. يرجى التحقق من المفتاح وإعادة المحاولة.';
-            } else if (apiError.message.includes('quota')) {
-                errorMessage = 'تم تجاوز الحد المسموح. جرب استخدام نموذج مختلف أو مفتاح API آخر.';
-            } else {
-                errorMessage += ': ' + apiError.message;
-            }
-            
-            showAlert(errorMessage, 'error');
-            
-            elements.result.innerHTML = `
-                <div style="text-align: center; color: #e74c3c; padding: 40px;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                    <h3 style="color: #c0392b;">خطأ في المعالجة</h3>
-                    <p style="margin-top: 10px;">${errorMessage}</p>
-                    <div style="margin-top: 20px;">
-                        <button onclick="retryWithDifferentModel()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
-                            <i class="fas fa-sync-alt"></i> المحاولة بنموذج مختلف
-                        </button>
-                        <button onclick="loadAvailableModels()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
-                            <i class="fas fa-redo"></i> تحديث النماذج
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function retryWithDifferentModel() {
-            // اختيار نموذج مختلف عشوائياً
-            if (appState.availableModels.length > 1) {
-                const currentIndex = appState.availableModels.findIndex(m => m.name === appState.selectedModel);
-                const nextIndex = (currentIndex + 1) % appState.availableModels.length;
-                const newModel = appState.availableModels[nextIndex];
-                
-                elements.modelSelect.value = newModel.name;
-                appState.selectedModel = newModel.name;
-                updateModelInfo();
-                
-                showAlert(`تم التغيير إلى النموذج: ${newModel.name.split('/').pop()}`, 'info');
-                
-                // إعادة المحاولة تلقائياً
-                setTimeout(() => {
-                    if (elements.fileInput.files[0]) {
-                        extractAndAnalyze();
-                    }
-                }, 1000);
-            }
-        }
-
-        function displayExtractedResults(text) {
-            elements.result.innerHTML = `
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #3498db;">
-                    <h3 style="color: #2c3e50; margin-top: 0;">
-                        <i class="fas fa-check-circle" style="color: #27ae60;"></i>
-                        تم استخراج البيانات بنجاح
-                    </h3>
-                    <p style="color: #7f8c8d; margin: 0;">
-                        ${text.length} حرف مستخرج. جاري معالجة البيانات تلقائياً...
-                    </p>
-                </div>
-                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; max-height: 300px; overflow-y: auto;">
-                    <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; line-height: 1.5; direction: ltr; text-align: left; font-size: 14px;">${text}</pre>
-                </div>
-            `;
-        }
-
-        function finishProcessing() {
-            elements.btnExtract.disabled = false;
-            elements.btnExtract.innerHTML = '<i class="fas fa-magic"></i> استخراج وتحليل تلقائي';
-            
-            setTimeout(() => {
-                elements.progressBar.style.width = '0%';
-            }, 1000);
-        }
-
-        // معالجة البيانات المستخرجة يدوياً
-        async function processExtractedData() {
-            if (!appState.extractedData) {
-                showAlert('لا توجد بيانات مستخرجة. يرجى استخراج النصوص أولاً.', 'error');
-                return;
-            }
-            
-            const button = event?.target?.closest('button');
-            if (button) {
-                button.innerHTML = '<span class="loading"></span> جاري المعالجة...';
-                button.disabled = true;
-            }
-            
-            try {
-                const students = await processExtractedDataAutomatically(appState.extractedData);
-                
-                if (students.length > 0) {
-                    showAlert(`تمت معالجة ${students.length} طالب بنجاح`, 'success');
-                    
-                    // تحديث عرض البيانات
-                    elements.extractedDataSection.classList.remove('hidden');
-                    elements.rawDataPreview.textContent = appState.extractedData;
-                    
-                    // الانتقال إلى تحليل النتائج
-                    setTimeout(() => switchTab('analysis'), 500);
-                } else {
-                    showAlert('لم يتم العثور على بيانات طلاب في النص المستخرج. يرجى مراجعة تنسيق البيانات.', 'warning');
-                    
-                    // عرض البيانات للتحرير اليدوي
-                    elements.result.innerHTML = `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #ff9800;">
-                            <h3 style="color: #2c3e50; margin-top: 0;">
-                                <i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i>
-                                يحتاج إلى تدخل يدوي
-                            </h3>
-                            <p style="color: #7f8c8d; margin: 0;">
-                                لم يتم التعرف على البيانات تلقائياً. يرجى تحرير النص يدوياً.
-                            </p>
-                        </div>
-                        <textarea id="manualEdit" style="width: 100%; height: 300px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; direction: ltr;">${appState.extractedData}</textarea>
-                        <div style="margin-top: 20px; text-align: center;">
-                            <button onclick="processManualEdit()" style="background: #3498db; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin: 5px;">
-                                <i class="fas fa-cogs"></i> معالجة النص المحرر
-                            </button>
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                console.error("خطأ في معالجة البيانات:", error);
-                showAlert('حدث خطأ أثناء معالجة البيانات: ' + error.message, 'error');
-            } finally {
-                if (button) {
-                    button.innerHTML = '<i class="fas fa-robot"></i> معالجة البيانات المستخرجة';
-                    button.disabled = false;
-                }
-            }
-        }
-
-        function processManualEdit() {
-            const editedText = document.getElementById('manualEdit').value;
-            appState.extractedData = editedText;
-            processExtractedData();
-        }
-
-        // إدارة البيانات
-        function initializeClasses() {
-            appState.classes = ['2/أ', '2/ب', '2/ج', '2/د', '2/هـ', '2/و', 'غير محدد'];
         }
 
         function getLevel(score) {
@@ -1497,15 +1547,53 @@
             return {name: 'ضعيف', class: 'weak'};
         }
 
-        function updateStudentsTable() {
-            const tbody = document.getElementById('studentsTableBody');
+        function addStudentToMap(studentData) {
+            // استخدام Map لمنع التكرار بناءً على ID
+            appState.students.set(studentData.id, studentData);
+        }
+
+        // إدارة البيانات
+        function addStudent() {
+            const name = elements.studentName.value.trim();
+            const subject = elements.subject.value;
+            const className = elements.className.value;
+            const score = parseFloat(elements.score.value);
             
-            if (appState.students.length === 0) {
+            if (!name || isNaN(score) || score < 0 || score > 40) {
+                showAlert('manageAlert', 'يرجى إدخال بيانات صحيحة (الدرجة من 0 إلى 40)', 'error');
+                return;
+            }
+            
+            const studentData = {
+                id: generateStudentId(name),
+                name: cleanText(name),
+                subject,
+                className,
+                score,
+                level: getLevel(score)
+            };
+            
+            addStudentToMap(studentData);
+            updateStudentsTable();
+            
+            // تفريغ الحقول
+            clearForm();
+            
+            showAlert('manageAlert', `تم إضافة الطالب ${name} بنجاح`, 'success');
+            
+            updateAnalysis();
+            saveToLocalStorage();
+        }
+
+        function updateStudentsTable() {
+            const tbody = elements.studentsTableBody;
+            
+            if (appState.students.size === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align:center; padding:30px; color:#666;">
                             <i class="fas fa-users-slash" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
-                            لا توجد بيانات، يرجى استخراج البيانات أولاً
+                            لا توجد بيانات، يرجى إضافة طلاب
                         </td>
                     </tr>
                 `;
@@ -1513,19 +1601,27 @@
             }
             
             let html = '';
+            let index = 1;
             
-            appState.students.forEach((student, index) => {
+            // استخدام Array.from للحفاظ على ترتيب الإدخال
+            Array.from(appState.students.values()).forEach(student => {
                 html += `
                     <tr>
-                        <td>${index + 1}</td>
+                        <td>${index++}</td>
                         <td>${student.name}</td>
                         <td>${student.subject}</td>
                         <td>${student.className}</td>
                         <td><strong>${student.score}</strong></td>
-                        <td><span class="level-badge level-${student.level.class}">${student.level.name}</span></td>
-                        <td><button class="delete-btn" onclick="deleteStudent('${student.id}')">
-                            <i class="fas fa-trash"></i> حذف
-                        </button></td>
+                        <td>
+                            <span class="level-badge level-${student.level.class}">
+                                ${student.level.name}
+                            </span>
+                        </td>
+                        <td>
+                            <button onclick="deleteStudent('${student.id}')" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
@@ -1533,70 +1629,62 @@
             tbody.innerHTML = html;
         }
 
-        function deleteStudent(id) {
+        function deleteStudent(studentId) {
             if (confirm('هل أنت متأكد من حذف هذا الطالب؟')) {
-                appState.students = appState.students.filter(student => student.id !== id);
+                appState.students.delete(studentId);
                 updateStudentsTable();
                 updateAnalysis();
-                showAlert('تم حذف الطالب بنجاح', 'success');
+                showAlert('manageAlert', 'تم حذف الطالب بنجاح', 'success');
                 saveToLocalStorage();
             }
+        }
+
+        function clearForm() {
+            elements.studentName.value = '';
+            elements.score.value = '';
+            elements.studentName.focus();
         }
 
         function clearAllData() {
             if (confirm('هل أنت متأكد من مسح جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.')) {
-                appState.students = [];
+                appState.students.clear();
                 appState.extractedData = '';
                 updateStudentsTable();
                 updateAnalysis();
-                elements.extractedDataSection.classList.add('hidden');
-                showAlert('تم مسح جميع البيانات بنجاح', 'success');
+                elements.resultContainer.classList.add('hidden');
+                showAlert('manageAlert', 'تم مسح جميع البيانات بنجاح', 'success');
                 saveToLocalStorage();
             }
         }
 
-        function refreshDataView() {
-            updateStudentsTable();
-            if (appState.extractedData) {
-                elements.extractedDataSection.classList.remove('hidden');
-                elements.rawDataPreview.textContent = appState.extractedData;
-            }
-            showAlert('تم تحديث العرض', 'info');
-        }
-
-        // تحليل البيانات
+        // التحليل والإحصائيات
         function updateAnalysis() {
-            if (appState.students.length === 0) {
+            if (appState.students.size === 0) {
                 elements.analysisAlert.classList.remove('hidden');
-                elements.summaryCards.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #666; background: #f8f9fa; border-radius: 10px;">
-                        <i class="fas fa-chart-bar"></i>
-                        <h3>لا توجد بيانات لعرض التحليل</h3>
-                        <p>يرجى استخراج البيانات أولاً</p>
-                    </div>
-                `;
+                elements.summaryCards.innerHTML = '';
                 elements.levelDetailsTable.innerHTML = '';
                 return;
             }
             
             elements.analysisAlert.classList.add('hidden');
             
-            const totalStudents = appState.students.length;
-            const totalScore = appState.students.reduce((sum, student) => sum + student.score, 0);
+            const students = Array.from(appState.students.values());
+            const totalStudents = students.length;
+            const totalScore = students.reduce((sum, student) => sum + student.score, 0);
             const avgScore = totalScore / totalStudents;
-            const passedStudents = appState.students.filter(student => student.score >= 20).length;
+            const passedStudents = students.filter(student => student.score >= 20).length;
             const passRate = totalStudents > 0 ? (passedStudents / totalStudents * 100).toFixed(1) : 0;
             
             const levelCounts = {
                 'ممتاز': 0, 'جيد جدًا': 0, 'جيد': 0, 'مقبول': 0, 'ضعيف': 0
             };
             
-            appState.students.forEach(student => {
+            students.forEach(student => {
                 levelCounts[student.level.name]++;
             });
             
             const subjectCounts = {};
-            appState.students.forEach(student => {
+            students.forEach(student => {
                 if (!subjectCounts[student.subject]) {
                     subjectCounts[student.subject] = {count: 0, totalScore: 0};
                 }
@@ -1616,23 +1704,23 @@
             elements.summaryCards.innerHTML = `
                 <div class="summary-card">
                     <h3><i class="fas fa-users"></i> عدد الطلاب</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0; color: #333;">${totalStudents}</div>
-                    <div style="font-size: 0.9rem; color: #666;">طالب مستخرج</div>
+                    <div class="value">${totalStudents}</div>
+                    <div class="subtext">طالب</div>
                 </div>
                 <div class="summary-card">
                     <h3><i class="fas fa-chart-line"></i> متوسط الدرجات</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0; color: #333;">${avgScore.toFixed(1)}</div>
-                    <div style="font-size: 0.9rem; color: #666;">من 40</div>
+                    <div class="value">${avgScore.toFixed(1)}</div>
+                    <div class="subtext">من 40</div>
                 </div>
                 <div class="summary-card">
                     <h3><i class="fas fa-percentage"></i> نسبة النجاح</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0; color: #333;">${passRate}%</div>
-                    <div style="font-size: 0.9rem; color: #666;">${passedStudents} طالب</div>
+                    <div class="value">${passRate}%</div>
+                    <div class="subtext">نجحوا</div>
                 </div>
                 <div class="summary-card">
                     <h3><i class="fas fa-trophy"></i> أعلى مستوى</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0; color: #333;">${highestLevel}</div>
-                    <div style="font-size: 0.9rem; color: #666;">${highestCount} طالب</div>
+                    <div class="value">${highestLevel}</div>
+                    <div class="subtext">${highestCount} طالب</div>
                 </div>
             `;
         }
@@ -1645,68 +1733,61 @@
             });
             
             // رسم بياني للمستويات
-            try {
-                const levelCtx = document.getElementById('levelChart').getContext('2d');
-                new Chart(levelCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(levelCounts),
-                        datasets: [{
-                            data: Object.values(levelCounts),
-                            backgroundColor: ['#4caf50', '#009688', '#2196f3', '#ff9800', '#f44336']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { 
-                                position: 'bottom',
-                                labels: { padding: 20 }
-                            }
+            const levelCtx = document.getElementById('levelChart').getContext('2d');
+            new Chart(levelCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(levelCounts),
+                    datasets: [{
+                        data: Object.values(levelCounts),
+                        backgroundColor: ['#4caf50', '#009688', '#2196f3', '#ff9800', '#f44336'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { padding: 15 }
                         }
                     }
-                });
-            } catch (error) {
-                console.error("خطأ في رسم بياني المستويات:", error);
-            }
+                }
+            });
             
             // رسم بياني للمواد
-            try {
-                const subjectLabels = Object.keys(subjectCounts);
-                const subjectAverages = subjectLabels.map(subject => 
-                    (subjectCounts[subject].totalScore / subjectCounts[subject].count).toFixed(1)
-                );
-                
-                const subjectCtx = document.getElementById('subjectChart').getContext('2d');
-                new Chart(subjectCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: subjectLabels,
-                        datasets: [{
-                            label: 'متوسط الدرجة',
-                            data: subjectAverages,
-                            backgroundColor: '#1a5c9e'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 40,
-                                ticks: { 
-                                    stepSize: 5,
-                                    callback: value => value + ' درجة'
-                                }
+            const subjectLabels = Object.keys(subjectCounts);
+            const subjectAverages = subjectLabels.map(subject => 
+                (subjectCounts[subject].totalScore / subjectCounts[subject].count).toFixed(1)
+            );
+            
+            const subjectCtx = document.getElementById('subjectChart').getContext('2d');
+            new Chart(subjectCtx, {
+                type: 'bar',
+                data: {
+                    labels: subjectLabels,
+                    datasets: [{
+                        label: 'المتوسط',
+                        data: subjectAverages,
+                        backgroundColor: '#1a5c9e'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 40,
+                            ticks: { 
+                                stepSize: 5,
+                                callback: value => value + ' درجة'
                             }
                         }
                     }
-                });
-            } catch (error) {
-                console.error("خطأ في رسم بياني المواد:", error);
-            }
+                }
+            });
         }
 
         function updateLevelDetailsTable(levelCounts) {
@@ -1719,73 +1800,63 @@
             };
             
             let tableHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #eee; font-weight: bold; background: #f8f9fa;">
-                    <div style="padding: 12px; text-align: center;">عدد الطلاب</div>
-                    <div style="padding: 12px; text-align: center;">نطاق الدرجات</div>
-                    <div style="padding: 12px; text-align: center;">المستوى</div>
-                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                    <div style="font-weight: bold; padding: 10px; background: #f8f9fa; border-radius: 8px;">عدد</div>
+                    <div style="font-weight: bold; padding: 10px; background: #f8f9fa; border-radius: 8px;">نطاق الدرجات</div>
+                    <div style="font-weight: bold; padding: 10px; background: #f8f9fa; border-radius: 8px;">المستوى</div>
             `;
             
             const levels = ['ممتاز', 'جيد جدًا', 'جيد', 'مقبول', 'ضعيف'];
             
             levels.forEach(level => {
                 const count = levelCounts[level] || 0;
-                const percentage = appState.students.length > 0 ? ((count / appState.students.length) * 100).toFixed(1) : '0';
+                const percentage = appState.students.size > 0 ? ((count / appState.students.size) * 100).toFixed(1) : '0';
                 tableHTML += `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid #eee;">
-                        <div style="padding: 12px; text-align: center;"><strong>${count}</strong> <small>(${percentage}%)</small></div>
-                        <div style="padding: 12px; text-align: center;">${levelRanges[level]}</div>
-                        <div style="padding: 12px; text-align: center;">
-                            <span class="level-badge level-${level}">${level}</span>
-                        </div>
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;"><strong>${count}</strong> <small>(${percentage}%)</small></div>
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;">${levelRanges[level]}</div>
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <span class="level-badge level-${level}">${level}</span>
                     </div>
                 `;
             });
             
+            tableHTML += '</div>';
             elements.levelDetailsTable.innerHTML = tableHTML;
         }
 
         // التقرير النهائي
         async function generatePDF() {
-            if (appState.students.length === 0) {
-                showAlert('لا توجد بيانات لإنشاء تقرير', 'error');
+            if (appState.students.size === 0) {
+                showAlert('reportAlert', 'لا توجد بيانات لإنشاء تقرير', 'error');
                 return;
             }
             
-            const button = event.target.closest('button');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<span class="loading"></span> جاري إنشاء PDF...';
-            button.disabled = true;
-            
             updateReportContent();
             
-            setTimeout(() => {
-                html2canvas(document.getElementById('reportContent'), {
+            try {
+                // استخدام html2canvas و jsPDF لإنشاء PDF
+                const canvas = await html2canvas(document.getElementById('reportContent'), {
                     scale: 2,
-                    backgroundColor: "#fff",
-                    useCORS: true,
-                    logging: false
-                }).then(canvas => {
-                    const imgData = canvas.toDataURL("image/jpeg", 0.9);
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF("p", "mm", "a4");
-                    
-                    pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
-                    pdf.save("تقرير_النتائج_المستخرجة.pdf");
-                    
-                    showAlert('تم حفظ التقرير بنجاح', 'success');
-                }).catch(error => {
-                    console.error('خطأ في إنشاء PDF:', error);
-                    showAlert('حدث خطأ أثناء إنشاء التقرير', 'error');
-                }).finally(() => {
-                    button.innerHTML = originalText;
-                    button.disabled = false;
+                    backgroundColor: '#ffffff',
+                    useCORS: true
                 });
-            }, 500);
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                pdf.save('تقرير_النتائج.pdf');
+                
+                showAlert('reportAlert', 'تم حفظ التقرير بنجاح', 'success');
+            } catch (error) {
+                console.error('خطأ في إنشاء PDF:', error);
+                showAlert('reportAlert', 'حدث خطأ أثناء إنشاء التقرير', 'error');
+            }
         }
 
         function updateReportContent() {
-            if (appState.students.length === 0) {
+            if (appState.students.size === 0) {
                 elements.reportAlert.classList.remove('hidden');
                 elements.reportContent.innerHTML = '';
                 return;
@@ -1793,91 +1864,52 @@
             
             elements.reportAlert.classList.add('hidden');
             
-            const totalStudents = appState.students.length;
-            const totalScore = appState.students.reduce((sum, student) => sum + student.score, 0);
+            const students = Array.from(appState.students.values());
+            const totalStudents = students.length;
+            const totalScore = students.reduce((sum, student) => sum + student.score, 0);
             const avgScore = totalScore / totalStudents;
-            const passedStudents = appState.students.filter(student => student.score >= 20).length;
-            const passRate = (passedStudents / totalStudents * 100).toFixed(1);
-            
-            const levelCounts = {
-                'ممتاز': 0, 'جيد جدًا': 0, 'جيد': 0, 'مقبول': 0, 'ضعيف': 0
-            };
-            
-            appState.students.forEach(student => {
-                levelCounts[student.level.name]++;
-            });
-            
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ar-SA', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
             
             let reportHTML = `
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #1a5c9e; margin-bottom: 10px;">📊 تقرير نتائج الطلاب المستخرجة</h1>
-                    <p style="color: #666; margin-bottom: 5px;">التقرير تم إنشاؤه تلقائياً من البيانات المستخرجة</p>
-                    <p style="color: #888; font-size: 0.9rem;">${dateStr}</p>
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h1 style="color: #1a5c9e; margin-bottom: 10px; font-size: 1.8rem;">📊 تقرير نتائج الطلاب</h1>
+                    <p style="color: #666; margin-bottom: 5px;">التقرير تم إنشاؤه تلقائياً</p>
+                    <p style="color: #888; font-size: 0.9rem;">${new Date().toLocaleDateString('ar-SA')}</p>
                 </div>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
-                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #1a5c9e;">
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 20px; border-radius: 10px; text-align: center;">
                         <h3 style="color: #1a5c9e; margin-bottom: 10px;"><i class="fas fa-users"></i> إجمالي الطلاب</h3>
                         <div style="font-size: 2.5rem; font-weight: bold; color: #0d47a1;">${totalStudents}</div>
                     </div>
-                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #4caf50;">
+                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 10px; text-align: center;">
                         <h3 style="color: #2e7d32; margin-bottom: 10px;"><i class="fas fa-chart-line"></i> متوسط الدرجات</h3>
                         <div style="font-size: 2.5rem; font-weight: bold; color: #1b5e20;">${avgScore.toFixed(1)}</div>
                     </div>
-                    <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #ff9800;">
-                        <h3 style="color: #ef6c00; margin-bottom: 10px;"><i class="fas fa-percentage"></i> نسبة النجاح</h3>
-                        <div style="font-size: 2.5rem; font-weight: bold; color: #e65100;">${passRate}%</div>
-                    </div>
                 </div>
                 
-                <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    <h2 style="color: #1a5c9e; margin-bottom: 20px; border-bottom: 3px solid #1a5c9e; padding-bottom: 10px;">
-                        <i class="fas fa-chart-pie"></i> توزيع الطلاب حسب المستوى
-                    </h2>
-                    <div style="height: 350px; display: flex; justify-content: center; align-items: center;">
-                        <div style="width: 400px; height: 350px;">
-                            <canvas id="reportLevelChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    <h2 style="color: #1a5c9e; margin-bottom: 20px; border-bottom: 3px solid #1a5c9e; padding-bottom: 10px;">
-                        <i class="fas fa-list-ol"></i> تفاصيل النتائج
-                    </h2>
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
-                            <thead>
-                                <tr style="background: linear-gradient(135deg, #1a5c9e 0%, #0d47a1 100%); color: white;">
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">#</th>
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">اسم الطالب</th>
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">المادة</th>
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">الفصل</th>
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">الدرجة</th>
-                                    <th style="padding: 15px; text-align: center; border: 1px solid #0d47a1;">المستوى</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: #1a5c9e; color: white;">
+                                <th style="padding: 12px; text-align: center;">الاسم</th>
+                                <th style="padding: 12px; text-align: center;">المادة</th>
+                                <th style="padding: 12px; text-align: center;">الفصل</th>
+                                <th style="padding: 12px; text-align: center;">الدرجة</th>
+                                <th style="padding: 12px; text-align: center;">المستوى</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
             
-            appState.students.forEach((student, index) => {
-                const rowColor = index % 2 === 0 ? '#f8f9fa' : '#ffffff';
+            students.forEach(student => {
                 reportHTML += `
-                    <tr style="background: ${rowColor};">
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee; font-weight: bold;">${index + 1}</td>
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee;">${student.name}</td>
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee;">${student.subject}</td>
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee;">${student.className}</td>
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee; font-weight: bold; color: #1a5c9e;">${student.score}</td>
-                        <td style="padding: 12px; text-align: center; border: 1px solid #eee;">
-                            <span style="color: #fff; padding: 6px 12px; border-radius: 4px; background: ${getLevelColor(student.level.name)}; display: inline-block; min-width: 80px; font-weight: bold;">
+                    <tr>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">${student.name}</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">${student.subject}</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">${student.className}</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee; font-weight: bold;">${student.score}</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">
+                            <span style="color: #fff; padding: 5px 10px; border-radius: 4px; background: ${getLevelColor(student.level.name)};">
                                 ${student.level.name}
                             </span>
                         </td>
@@ -1886,56 +1918,12 @@
             });
             
             reportHTML += `
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div style="background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%); padding: 20px; border-radius: 10px; text-align: center; margin-top: 30px; border: 1px solid #ddd;">
-                    <p style="color: #666; margin-bottom: 10px;">
-                        <i class="fas fa-robot"></i> تم إنشاء هذا التقرير تلقائياً بواسطة نظام استخراج وتحليل نتائج الطلاب المتكامل
-                    </p>
-                    <p style="color: #888; font-size: 0.9rem;">
-                        <i class="fas fa-clock"></i> ${now.toLocaleString('ar-SA')}
-                    </p>
+                        </tbody>
+                    </table>
                 </div>
             `;
             
             elements.reportContent.innerHTML = reportHTML;
-            
-            // رسم الرسم البياني للتقرير
-            setTimeout(() => {
-                try {
-                    const reportLevelCtx = document.getElementById('reportLevelChart').getContext('2d');
-                    new Chart(reportLevelCtx, {
-                        type: 'pie',
-                        data: {
-                            labels: Object.keys(levelCounts),
-                            datasets: [{
-                                data: Object.values(levelCounts),
-                                backgroundColor: ['#4caf50', '#009688', '#2196f3', '#ff9800', '#f44336'],
-                                borderWidth: 2,
-                                borderColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { 
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 20,
-                                        font: { size: 14 }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                } catch (error) {
-                    console.error("خطأ في رسم الرسم البياني للتقرير:", error);
-                }
-            }, 100);
         }
 
         function getLevelColor(level) {
@@ -1950,112 +1938,119 @@
         }
 
         function printReport() {
-            if (appState.students.length === 0) {
-                showAlert('لا توجد بيانات للطباعة', 'error');
+            if (appState.students.size === 0) {
+                showAlert('reportAlert', 'لا توجد بيانات للطباعة', 'error');
                 return;
             }
             
             updateReportContent();
-            setTimeout(() => {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html dir="rtl">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>تقرير النتائج</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
-                            h1 { color: #1a5c9e; text-align: center; }
-                            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                            th { background: #1a5c9e; color: white; padding: 10px; }
-                            td { padding: 8px; border: 1px solid #ddd; text-align: center; }
-                            .summary { display: flex; justify-content: space-around; margin: 20px 0; }
-                            .summary-item { text-align: center; padding: 15px; }
-                            .footer { text-align: center; margin-top: 30px; color: #666; }
-                        </style>
-                    </head>
-                    <body>
-                        ${document.getElementById('reportContent').innerHTML}
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-                printWindow.print();
-            }, 500);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>تقرير النتائج</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+                        @media print {
+                            body { margin: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${document.getElementById('reportContent').innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
         }
 
         function exportToExcel() {
-            if (appState.students.length === 0) {
-                showAlert('لا توجد بيانات للتصدير', 'error');
+            if (appState.students.size === 0) {
+                showAlert('reportAlert', 'لا توجد بيانات للتصدير', 'error');
                 return;
             }
             
-            // إنشاء بيانات CSV
+            const students = Array.from(appState.students.values());
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "الاسم,المادة,الفصل,الدرجة,المستوى\n";
             
-            // العنوان
-            csvContent += "تقرير نتائج الطلاب المستخرجة\r\n";
-            csvContent += `تاريخ الإنشاء: ${new Date().toLocaleString('ar-SA')}\r\n\r\n`;
-            
-            // رأس الجدول
-            csvContent += "م,اسم الطالب,المادة,الفصل,الدرجة,المستوى\r\n";
-            
-            // البيانات
-            appState.students.forEach((student, index) => {
-                csvContent += `${index + 1},${student.name},${student.subject},${student.className},${student.score},${student.level.name}\r\n`;
+            students.forEach(student => {
+                csvContent += `${student.name},${student.subject},${student.className},${student.score},${student.level.name}\n`;
             });
             
-            // الإحصائيات
-            csvContent += "\r\nالإحصائيات:\r\n";
-            const totalStudents = appState.students.length;
-            const totalScore = appState.students.reduce((sum, student) => sum + student.score, 0);
-            const avgScore = totalScore / totalStudents;
-            const passedStudents = appState.students.filter(student => student.score >= 20).length;
-            const passRate = (passedStudents / totalStudents * 100).toFixed(1);
-            
-            csvContent += `إجمالي الطلاب,${totalStudents}\r\n`;
-            csvContent += `متوسط الدرجات,${avgScore.toFixed(1)}\r\n`;
-            csvContent += `نسبة النجاح,${passRate}%\r\n`;
-            
-            // إنشاء رابط التحميل
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "نتائج_الطلاب_المستخرجة.csv");
+            link.setAttribute("download", "نتائج_الطلاب.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showAlert('تم تصدير البيانات إلى ملف Excel', 'success');
+            showAlert('reportAlert', 'تم تصدير البيانات إلى ملف Excel', 'success');
         }
 
-        // وظائف المساعدة
+        function shareReport() {
+            if (appState.students.size === 0) {
+                showAlert('reportAlert', 'لا توجد بيانات للمشاركة', 'error');
+                return;
+            }
+            
+            const students = Array.from(appState.students.values());
+            const totalStudents = students.length;
+            const totalScore = students.reduce((sum, student) => sum + student.score, 0);
+            const avgScore = totalScore / totalStudents;
+            
+            const text = `تقرير نتائج الطلاب:
+            • عدد الطلاب: ${totalStudents}
+            • متوسط الدرجات: ${avgScore.toFixed(1)}
+            • تم إنشاء التقرير بواسطة نظام استخراج وتحليل النتائج`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'تقرير نتائج الطلاب',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // نسخ إلى الحافظة
+                navigator.clipboard.writeText(text).then(() => {
+                    showAlert('reportAlert', 'تم نسخ التقرير إلى الحافظة', 'success');
+                });
+            }
+        }
+
+        // وظائف مساعدة
         function switchTab(tabName) {
+            // إخفاء جميع المحتويات
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
+            // إلغاء تنشيط جميع التبويبات
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            const tabElement = document.getElementById(tabName + '-tab');
-            if (tabElement) {
-                tabElement.classList.add('active');
+            // إظهار المحتوى المطلوب
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
             }
             
+            // تفعيل التبويب المطلوب
             document.querySelectorAll('.tab').forEach(tab => {
                 if (tab.textContent.includes(getTabText(tabName))) {
                     tab.classList.add('active');
                 }
             });
             
+            // تحديث العرض إذا لزم الأمر
             if (tabName === 'analysis') {
                 updateAnalysis();
-            }
-            
-            if (tabName === 'report') {
+            } else if (tabName === 'report') {
                 updateReportContent();
             }
         }
@@ -2063,56 +2058,46 @@
         function getTabText(tabName) {
             switch(tabName) {
                 case 'extract': return 'استخراج النصوص';
-                case 'input': return 'إدارة البيانات';
+                case 'manage': return 'إدارة البيانات';
                 case 'analysis': return 'تحليل النتائج';
                 case 'report': return 'التقرير النهائي';
                 default: return '';
             }
         }
 
-        function showAlert(message, type = 'info') {
+        function showAlert(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
             const icon = type === 'success' ? 'fas fa-check-circle' : 
                          type === 'error' ? 'fas fa-times-circle' : 
                          type === 'warning' ? 'fas fa-exclamation-triangle' : 
                          'fas fa-info-circle';
             
-            const alertClass = type === 'success' ? 'success' : 
-                              type === 'error' ? 'error' : 
-                              type === 'warning' ? 'warning' : 
-                              'info';
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-error' : 
+                              type === 'warning' ? 'alert-warning' : 
+                              'alert-info';
             
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert ${alertClass}`;
-            alertDiv.innerHTML = `
+            element.className = `alert ${alertClass}`;
+            element.innerHTML = `
                 <i class="${icon}"></i>
                 <span>${message}</span>
             `;
             
-            // إزالة أي رسائل سابقة
-            const existingAlerts = document.querySelectorAll('.alert');
-            existingAlerts.forEach(alert => {
-                if (alert.parentNode) {
-                    setTimeout(() => alert.remove(), 100);
-                }
-            });
+            element.classList.remove('hidden');
             
-            // إضافة الرسالة الجديدة
-            document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.tabs'));
-            
-            // إزالة الرسالة بعد 5 ثواني
+            // إخفاء الرسالة بعد 5 ثواني
             setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
+                element.classList.add('hidden');
             }, 5000);
         }
 
         function saveToLocalStorage() {
             try {
                 const data = {
-                    students: appState.students,
+                    students: Array.from(appState.students.entries()),
                     extractedData: appState.extractedData,
-                    selectedModel: appState.selectedModel,
                     lastUpdated: new Date().toISOString()
                 };
                 localStorage.setItem('studentResultsData', JSON.stringify(data));
@@ -2126,21 +2111,15 @@
                 const savedData = localStorage.getItem('studentResultsData');
                 if (savedData) {
                     const data = JSON.parse(savedData);
-                    appState.students = data.students || [];
-                    appState.extractedData = data.extractedData || '';
-                    appState.selectedModel = data.selectedModel || '';
                     
-                    if (appState.selectedModel) {
-                        elements.modelSelect.value = appState.selectedModel;
+                    // تحميل الطلاب
+                    if (data.students && Array.isArray(data.students)) {
+                        appState.students = new Map(data.students);
                     }
                     
-                    updateStudentsTable();
-                    updateAnalysis();
-                    
-                    // عرض البيانات المستخرجة إذا كانت موجودة
-                    if (appState.extractedData) {
-                        elements.extractedDataSection.classList.remove('hidden');
-                        elements.rawDataPreview.textContent = appState.extractedData;
+                    // تحميل البيانات المستخرجة
+                    if (data.extractedData) {
+                        appState.extractedData = data.extractedData;
                     }
                 }
             } catch (error) {
@@ -2148,21 +2127,25 @@
             }
         }
 
-        // تهيئة التطبيق
+        // تهيئة النظام
         initApp();
 
         // جعل الدوال متاحة عالمياً
         window.switchTab = switchTab;
-        window.processExtractedData = processExtractedData;
-        window.processManualEdit = processManualEdit;
+        window.addStudent = addStudent;
         window.deleteStudent = deleteStudent;
+        window.clearForm = clearForm;
         window.clearAllData = clearAllData;
-        window.refreshDataView = refreshDataView;
-        window.retryWithDifferentModel = retryWithDifferentModel;
-        window.loadAvailableModels = loadAvailableModels;
+        window.processExtractedData = processExtractedData;
         window.generatePDF = generatePDF;
         window.printReport = printReport;
         window.exportToExcel = exportToExcel;
+        window.shareReport = shareReport;
+        window.copyResults = copyResults;
     </script>
+
+    <!-- مكتبات خارجية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
